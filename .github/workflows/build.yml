@@ -19,6 +19,12 @@ jobs:
           distribution: 'adopt'
           java-version: '11'
 
+      - name: Set up Android SDK
+        uses: actions/setup-android@v2
+        with:
+          sdk-platform: '30' # Adjust to the platform version you need
+          build-tools: '30.0.3' # Use a version that includes zipalign
+
       - name: Install apktool
         run: |
           wget https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool -O $HOME/apktool
@@ -44,7 +50,7 @@ jobs:
         run: jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android dynamicspot-modded.apk androiddebugkey
 
       - name: Align APK
-        run: zipalign -v 4 dynamicspot-modded.apk dynamicspot-modded-aligned.apk
+        run: $ANDROID_HOME/build-tools/30.0.3/zipalign -v 4 dynamicspot-modded.apk dynamicspot-modded-aligned.apk
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.3.1
