@@ -43,8 +43,11 @@ jobs:
       - name: Sign APK with debug key
         run: jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android dynamicspot-modded.apk androiddebugkey
 
+      - name: Align APK
+        run: zipalign -v 4 dynamicspot-modded.apk dynamicspot-modded-aligned.apk
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.3.1
         with:
           name: DynamicSpot-Modded.apk
-          path: ./dynamicspot-modded.apk
+          path: ./dynamicspot-modded-aligned.apk
