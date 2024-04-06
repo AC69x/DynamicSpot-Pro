@@ -36,7 +36,12 @@ jobs:
       - name: Recompile APK
         run: apktool b decompiled_apk -o dynamicspot-modded.apk
 
-      # Additional steps for signing the APK if required
+      - name: Generate debug.keystore
+        run: |
+          keytool -genkeypair -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -keystore debug.keystore -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
+
+      - name: Sign APK with debug key
+        run: jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android dynamicspot-modded.apk androiddebugkey
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.3.1
