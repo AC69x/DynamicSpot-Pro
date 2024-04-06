@@ -19,18 +19,6 @@ jobs:
           distribution: 'adopt'
           java-version: '11'
 
-      - name: Install Android SDK
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y openjdk-11-jdk
-          wget -q https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip -O android-sdk-tools.zip
-          unzip -q android-sdk-tools.zip -d $HOME/android-sdk
-          echo "export ANDROID_HOME=$HOME/android-sdk" >> $HOME/.bashrc
-          echo "export PATH=\$PATH:\$ANDROID_HOME/tools:\$ANDROID_HOME/tools/bin:\$ANDROID_HOME/platform-tools" >> $HOME/.bashrc
-          source $HOME/.bashrc
-          yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-          $ANDROID_HOME/tools/bin/sdkmanager "build-tools;30.0.3" "platforms;android-30"
-
       - name: Install apktool
         run: |
           wget https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool -O $HOME/apktool
@@ -38,6 +26,12 @@ jobs:
           chmod +x $HOME/apktool
           sudo mv $HOME/apktool /usr/local/bin/
           sudo mv $HOME/apktool.jar /usr/local/bin/
+
+      - name: Install zipalign
+        run: |
+          wget https://github.com/blattmann/zipalign/raw/master/zipalign -O $HOME/zipalign
+          chmod +x $HOME/zipalign
+          sudo mv $HOME/zipalign /usr/local/bin/
 
       - name: Decompiling APK
         run: apktool d dynamicspot-latest.apk -o decompiled_apk
@@ -56,7 +50,7 @@ jobs:
         run: jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android dynamicspot-modded.apk androiddebugkey
 
       - name: Align APK
-        run: $ANDROID_HOME/build-tools/30.0.3/zipalign -v 4 dynamicspot-modded.apk dynamicspot-modded-aligned.apk
+        run: zipalign -v 4 dynamicspot-modded.apk dynamicspot-modded-aligned.apk
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
