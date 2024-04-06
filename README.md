@@ -4,6 +4,9 @@
 Simple apk modification written by me to unlock pro features.
 **(Please do not pirate software, purchase a license ****like i did**** and support the developer <3)**
 
+## Download pre-compiled
+
+- [Download from artifacts](../../actions/workflows/build.yml)
 
 ## Compile by yourself
 
